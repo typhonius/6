@@ -78,7 +78,7 @@ function _lock_id() {
     // Assign a unique id.
     $lock_id = uniqid(mt_rand(), TRUE);
     // We only register a shutdown function if a lock is used.
-    register_shutdown_function('lock_release_all', $lock_id);
+    register_shutdown_function('lock_release_all');
   }
   return $lock_id;
 }
@@ -213,13 +213,8 @@ function lock_release($name) {
 /**
  * Release all previously acquired locks.
  */
-function lock_release_all($lock_id = NULL) {
+function lock_release_all() {
   global $locks;
-
-  $locks = array();
-  if (empty($lock_id)) {
-    $lock_id = _lock_id();
-  }
 
   db_query("DELETE FROM {semaphore} WHERE value = '%s'", _lock_id());
 }
